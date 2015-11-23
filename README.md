@@ -86,7 +86,8 @@ function getComp(name, ret) {
 # 问题
 
 - components是否支持与scss集成
-    - 支持, component的样式文件按main.css, main.scc, main.less的顺序查找
+    - 支持, component的样式文件按main.css, main.scss, main.less的顺序查找
+    - 使用main.scss main.less时占位符`holder`请勿使用`$__`, `$`对scss会报错, 可以使用3个下划线`___`
 - 如何使用查找到lego下的component
     - 配置components中传入查找函数，想怎么找就怎么找
 
