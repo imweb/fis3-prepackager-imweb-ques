@@ -5,8 +5,9 @@ var Page = require('./lib/page');
 
 var entry = module.exports = function(ret, conf, settings, opt) {
 
-    var components = {}; // name: {js,jsPath,html,htmlPath,css,cssPath}
+    var components = {}; // 结构: name: {js,jsFile,html,htmlFile,css,cssFile}
 
+    // 获取查找组件
     function _getComp(name) {
         var comp = typeof components[name] !== 'undefined'
             ? components[name]
@@ -17,6 +18,7 @@ var entry = module.exports = function(ret, conf, settings, opt) {
     // html
     fis.util.map(ret.src, function(subpath, file) {
         if (file.isHtmlLike && (file.isQPage || hasQMark(file, settings))) {
+            // 让Ques的Page找到它的依赖和展开组件的html
             var p = new Page(file.getContent(), {
                 getComp: _getComp,
                 holder: settings.holder
@@ -26,6 +28,7 @@ var entry = module.exports = function(ret, conf, settings, opt) {
             fis.util.map(p.deps, function(name, dep) {
                 var css = dep.cssFile,
                     js = dep.jsFile;
+                // 添加组件css,js依赖
                 css && p.appendCss(css.url);
                 js && p.appendJs(js.url);
                 deps[name] = {
@@ -35,6 +38,7 @@ var entry = module.exports = function(ret, conf, settings, opt) {
                 };
             });
 
+            // 添加组件信息
             p.appendJsCode('var _components = ' + JSON.stringify(deps) + ';');
 
             // expand html
@@ -42,7 +46,7 @@ var entry = module.exports = function(ret, conf, settings, opt) {
         }
     });
 
-    // replace comp holder
+    // 替换组件js,css中的占位符
     fis.util.map(components, function(name, comp) {
         ['jsFile', 'cssFile'].forEach(function(item) {
             var f = comp[item];
@@ -53,20 +57,25 @@ var entry = module.exports = function(ret, conf, settings, opt) {
     });
 };
 
-function replaceHolder(str, name, conf) {
-    return str && str.replace(conf.holder, name + '__') || str;
+// 替换占位符
+function replaceHolder(str, name, settings) {
+    return str && str.replace(settings.holder, name + '__') || str;
 }
 
-function hasQMark(file, conf) {
-    var i = (file.getContent() || '').indexOf(conf.qMark);
+// 是否有Ques页面标记
+function hasQMark(file, settings) {
+    var i = (file.getContent() || '').indexOf(settings.qMark);
     return i >= 0 && i < 200;
 }
 
 entry.defaultOptions = {
-    qMark: '<!--isQPage-->',
+    // html文件是Ques页面的标记
+    qMark: '<!--isQPage-->', 
 
+    // 占位符
     holder: /___|\$__/g,
 
+    // 组件路径
     components: ['/components']
 };
 

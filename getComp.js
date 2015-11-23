@@ -1,7 +1,10 @@
 
-var fs = require('fs');
-var path = require('path');
-
+/**
+ * 查找组件
+ * @param {String} name 用-支持多级目录
+ * @param {Array.<String|Function>} components 组件目录/查找配置
+ * @param {Object} ret fis上下文
+ */
 module.exports = function (name, components, ret) {
     for (var i = 0; i < components.length; i++) {
         var get = components[i],
@@ -12,6 +15,7 @@ module.exports = function (name, components, ret) {
                 return comp;
             }
         } else if (typeof get === 'function') {
+            // 查找函数
             comp = get(name, ret);
             if (comp) {
                 return comp;
@@ -21,6 +25,13 @@ module.exports = function (name, components, ret) {
     return null;
 };
 
+/**
+ * 从文件夹下读组件
+ * @param {String} root 
+ * @param {String} name 用-支持多级目录
+ *      root='/components' name='sub-chead' 则在/components/sub/chead下读取组件
+ * @param {Object} ret fis上下文
+ */
 function readComp(root, name, ret) {
     var dir = [
         '', root.replace(/^\//, ''), name.replace(/-/g, '/'), ''
