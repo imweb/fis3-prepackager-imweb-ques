@@ -45,7 +45,7 @@ var entry = module.exports = function(ret, conf, settings, opt) {
     // replace comp holder
     fis.util.map(components, function(name, comp) {
         ['jsFile', 'cssFile'].forEach(function(item) {
-            var f = ret.src[item];
+            var f = comp[item];
             if (f) {
                 f.setContent(replaceHolder(f.getContent(), name, settings));
             }
@@ -59,7 +59,7 @@ function replaceHolder(str, name, conf) {
 
 entry.defaultOptions = {
 
-    holder: /___|$__/g,
+    holder: /___|\$__/g,
 
     components: ['/components']
 };
