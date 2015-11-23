@@ -2,6 +2,8 @@
 npm-debug.log*
 
 .grunt
+dev
+dist
 
 .lock-wscript
 node_modules
