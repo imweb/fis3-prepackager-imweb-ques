@@ -3,9 +3,6 @@ fis.hook('commonjs')
     .match('/*', {
         release: false
     })
-    .match('/build/**', {
-        release: false
-    })
     .match('/{pages,libs,components}/(**).js', {
         isMod: true
     })
