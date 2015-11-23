@@ -2,6 +2,24 @@
 
 fis3 prepackager plugin for q components of imweb team
 
+# 标识Ques页面
+
+```js
+fis.match('pages/**/*.main.html', {
+    isQPage: true
+})
+```
+or
+
+```html
+<!DOCTYPE html>
+<!--isQPage-->
+<html lang="en">
+<head></head>
+<body></body>
+</html>
+```
+
 # 处理过程
 
 - components/*.{css,js,scss}
@@ -22,6 +40,7 @@ fis3 prepackager plugin for q components of imweb team
     <meta charset="UTF-8">
     <title></title>
     <link rel="stylesheet" href="/pages/start/main.css">
+</head>
 <body>
     <chead></chead>
     <script src="/libs/mod.js"></script>
@@ -44,6 +63,7 @@ fis3 prepackager plugin for q components of imweb team
     <link rel="stylesheet" href="/pages/start/main.css">
     <!-- components css 依赖-->
     <link rel="stylesheet" href="/components/chead/main.css">
+</head>
 <body>
     <!-- 展开components -->
     <div q-text="text" class="component-1"></div>

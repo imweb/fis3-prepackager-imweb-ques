@@ -6,6 +6,9 @@ fis.hook('commonjs')
     .match('/{pages,libs,components}/(**).js', {
         isMod: true
     })
+    .match('/pages/**.html', {
+        isQPage: true
+    })
     .match('/libs/mod.js', {
         isMod: false
     })

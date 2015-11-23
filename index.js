@@ -16,7 +16,7 @@ var entry = module.exports = function(ret, conf, settings, opt) {
 
     // html
     fis.util.map(ret.src, function(subpath, file) {
-        if (file.isHtmlLike && !file.isQHtml) {
+        if (file.isHtmlLike && (file.isQPage || hasQMark(file, settings))) {
             var p = new Page(file.getContent(), {
                 getComp: _getComp,
                 holder: settings.holder
@@ -57,7 +57,13 @@ function replaceHolder(str, name, conf) {
     return str && str.replace(conf.holder, name + '__') || str;
 }
 
+function hasQMark(file, conf) {
+    var i = (file.getContent() || '').indexOf(conf.qMark);
+    return i >= 0 && i < 200;
+}
+
 entry.defaultOptions = {
+    qMark: '<!--isQPage-->',
 
     holder: /___|\$__/g,
 
