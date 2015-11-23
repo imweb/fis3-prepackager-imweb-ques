@@ -1,3 +1,7 @@
+/**
+ * @maintainer donaldyang
+ */
+
 var digitsRE = /(\d{3})(?=\d)/g,
     keyCodes = {
         enter    : 13,
@@ -20,7 +24,7 @@ module.exports = {
         read: function (value, indent) {
             return typeof value === 'string' ?
                 value :
-                    JSON.stringify(value, null, Number(indent) || 2);
+                    JSON.stringify(value, null, Number(indet) || 2);
         },
         write: function (value) {
             try {
@@ -35,9 +39,7 @@ module.exports = {
      * 'abc' => 'Abc'
      */
     capitalize: function (value) {
-        if (!value && value !== 0) {
-            return '';
-        }
+        if (!value && value !== 0) return '';
         value = value.toString();
         return value.charAt(0).toUpperCase() + value.slice(1);
     },
@@ -45,8 +47,8 @@ module.exports = {
     /**
      * 'abc' => 'ABC'
      */
-    uppercase: function (value) {
-        return value || value === 0 ?
+    uppercase: function () {
+        return (value || value === 0) ?
             value.toString().toUpperCase() :
                 '';
 
@@ -57,7 +59,7 @@ module.exports = {
      */
 
     lowercase: function (value) {
-        return value || value === 0 ?
+        return (value || value === 0) ?
             value.toString().toLowerCase() :
                 '';
     },
@@ -69,14 +71,12 @@ module.exports = {
      */
     currency: function (value, sign) {
         value = parseFloat(value);
-        if (!value && value !== 0) {
-            return '';
-        }
+        if (!value && value !== 0) return '';
         sign = sign || '$';
         var s = Math.floor(Math.abs(value)).toString(),
             i = s.length % 3,
             h = i > 0 ?
-                s.slice(0, i) + (s.length > 3 ? ',' : '') :
+                (s.slice(0, i) + (s.length > 3 ? ',' : '')) :
                     '',
             f = '.' + value.toFixed(2).slice(-2);
         return (value < 0 ? '-' : '') +
@@ -98,8 +98,8 @@ module.exports = {
     pluralize: function (value) {
         var args = [].slice.call(arguments, 1);
         return args.length > 1 ?
-            args[value % 10 - 1] || args[args.length - 1] :
-                args[0] + (value === 1 ? '' : 's');
+            (args[value % 10 - 1] || args[args.length - 1]) :
+                (args[0] + (value === 1 ? '' : 's'));
     },
 
     /**
@@ -110,9 +110,7 @@ module.exports = {
      * @param {String} key
      */
     key: function (handler, key) {
-        if (!handler) {
-            return;
-        }
+        if (!handler) return;
         var code = keyCodes[key];
         if (!code) {
             code = parseInt(key, 10);
@@ -127,4 +125,4 @@ module.exports = {
     turnback: function (s) {
         return s;
     }
-};
+}

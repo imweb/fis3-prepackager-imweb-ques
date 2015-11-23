@@ -1,56 +1,66 @@
 // begin from here
-var _ = require('./utils/components');
-var Tag = require('./lib/tag');
+var _ = require('lodash');
+var getComp = require('./getComp');
 var Page = require('./lib/page');
 
-module.exports = function(ret, conf, settings, opt) {
-    // console.log('prepackager-ques begin');
-    // console.log('ret', Object.keys(ret) /*, conf, settings, opt*/ );
-    // console.log('ret', Object.keys(ret.src) /*, conf, settings, opt*/ );
-    // console.log('ret', Object.keys(ret.ids) /*, conf, settings, opt*/ );
-    // console.log('ret', Object.keys(ret.pkg) /*, conf, settings, opt*/ );
-    // console.log('ret', Object.keys(ret.map) /*, conf, settings, opt*/ );
+var entry = module.exports = function(ret, conf, settings, opt) {
 
+    var components = {}; // name: {js,jsPath,html,htmlPath,css,cssPath}
+
+    function _getComp(name) {
+        var comp = typeof components[name] !== 'undefined'
+            ? components[name]
+            : components[name] = getComp(name, settings.components, ret);
+        return comp ? _.extend({}, comp) : null;
+    }
+
+    // html
     fis.util.map(ret.src, function(subpath, file) {
-        var page;
-
-        // if (file.isQHtml) {
-        //     console.log('find QHtml:', file.id, file.subpath, file.Qtpl);
-        // }
         if (file.isHtmlLike && !file.isQHtml) {
-            page = new Page(file.getContent(), file, ret, settings);
-            file.setContent(page.html());
+            var p = new Page(file.getContent(), {
+                getComp: _getComp,
+                holder: settings.holder
+            });
+
+            var deps = {};
+            fis.util.map(p.deps, function(name, dep) {
+                var css = dep.cssFile,
+                    js = dep.jsFile;
+                css && p.appendCss(css.url);
+                js && p.appendJs(js.url);
+                deps[name] = {
+                    js: js && (js.extras && js.extras.moduleId || js.url) || null,
+                    child: dep.child || 0,
+                    uid: dep.uid || 0
+                };
+            });
+
+            p.appendJsCode('var _components = ' + JSON.stringify(deps) + ';');
+
+            // expand html
+            file.setContent(p.$.html());
         }
     });
 
-    //    console.log('prepackager', conf, settings, opt);
-
-    //     fis.util.map(ret.src, function (subpath, file) {
-    //         if (file.isHtmlLike) {
-    // //            console.log('vue com:', file.getId()/*, conf*/);
-    // //            console.log(root, fis.util.isDir(root+'/modules/index'))
-
-    //             var match;
-    //             //exclude
-    //             if (!(match = file.getId().match(pageReg))) return content;
-    // //            console.log('>>>', file.getId());
-    //             var page = match[1], content = file.getContent();
-
-    //             content = content.replace(comReg, function(m, $1, $2, $3) {
-    //                 var id, dynamic;
-    //                 $2.replace(attrReg, function(mm, $$1, $$2) {
-    //                     if ('id' == $$1) {
-    //                         id = $$2.slice(1, $$2.length-1);
-    //                     } else if ('dynamic' == $$1) {
-    //                         dynamic = !!(parseInt($$2.slice(1, $$2.length-1)));
-    //                     }
-    //                     return mm;
-    //                 });
-    //                 if (id) return processCom(ret, opt, m, page, $1, id, dynamic, $3);
-    //                 return m;
-    //             });
-
-    //             file.setContent(content);
-    //         }
-    //     });
+    // replace comp holder
+    fis.util.map(components, function(name, comp) {
+        ['jsFile', 'cssFile'].forEach(function(item) {
+            var f = ret.src[item];
+            if (f) {
+                f.setContent(replaceHolder(f.getContent(), name, settings));
+            }
+        });
+    });
 };
+
+function replaceHolder(str, name, conf) {
+    return str && str.replace(conf.holder, name + '__') || str;
+}
+
+entry.defaultOptions = {
+
+    holder: /___|$__/g,
+
+    components: ['/components']
+};
+

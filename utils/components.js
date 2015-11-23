@@ -1,15 +1,11 @@
-var filters = require('./filters');
-var _filters = {};
-var _turnback = function(s) {
-    return s;
-};
-var path = require('path');
-var COMDIRNAME = 'components';
-var COMDIRPATH = fis.project.getProjectPath(COMDIRNAME);
+var filters = require('./filters')
+  , _filters = {}
+  , _turnback = function (s) { return s; }
+  , path = require('path');
 
 // build the read filters
-Object.keys(filters).forEach(function(key) {
-    _filters[key] = filters[key].read || filters[key] || _turnback;
+Object.keys(filters).forEach(function (key) {
+  _filters[key] = filters[key].read || filters[key] || _turnback;
 });
 
 /**
@@ -19,12 +15,11 @@ Object.keys(filters).forEach(function(key) {
  * @example _makeDeps(['a', 'b']) -> "['a', 'b']"
  */
 function _makeDeps(deps) {
-    var i = 0,
-        l = deps.length;
-    for (; i < l; i++) {
-        deps[i] = "'" + deps[i] + "'";
-    }
-    return "[" + deps.join(', ') + "]"
+  var i = 0 , l = deps.length;
+  for (; i < l; i++) {
+    deps[i] = "'" + deps[i] + "'";
+  }
+  return "[" + deps.join(', ') + "]"
 }
 
 /**
@@ -34,7 +29,7 @@ function _makeDeps(deps) {
  * @example _getDepJS('test') -> './components/test/main.js'
  */
 function _getDepJS(customTag) {
-    return _getDep(customTag, 'main.js');
+  return _getDep(customTag, 'main.js');
 }
 
 /**
@@ -44,7 +39,7 @@ function _getDepJS(customTag) {
  * @example _getDepCSS('test') -> './components/test/main.css'
  */
 function _getDepCSS(customTag) {
-    return _getDep(customTag, 'main.css');
+  return _getDep(customTag, 'main.css');
 }
 
 /**
@@ -54,7 +49,7 @@ function _getDepCSS(customTag) {
  * @returns {String} the custom tag file path
  */
 function _getDep(customTag, file) {
-    return './components/' + customTag.split('-').join('/') + '/' + file;
+  return './components/' + customTag.split('-').join('/') + '/' + file;
 }
 
 /**
@@ -63,16 +58,9 @@ function _getDep(customTag, file) {
  * @param {String} path the custom tag name or path
  * @returns {String}
  */
-function _fix(string, path) {
-    var mod = path.match(/components[\/\\]([\w-\\\/]+)[\/\\$]/);
-    if (mod) {
-        mod = mod[1].replace(/[\\\/]/g, '-');
-    } else {
-        mod = path;
-    }
-    return string.replace(/\$\_\_\$/g, mod)
-        .replace(/\$\_\_/g, mod + '__')
-        .trim();
+function _fix(string, name, holder) {
+  holder = holder || /\$\_\_/g;
+  return string.replace(holder, name + '__').trim();
 }
 
 /**
@@ -84,74 +72,39 @@ function _fix(string, path) {
  * @returns {Element}
  */
 function _makeFragment($, $ele, tpl, uid) {
-    var attrs = $ele.attr(),
-        res = $(tpl(attrs, {
-            filters: _filters
-        })),
-        content = res.find('content'),
-        select;
+  var attrs = $ele.attr()
+    , res = $(tpl(attrs, { filters: _filters }))
+    , content = res.find('content')
+    , select;
 
-    // use content
-    if (content.length) {
-        content.each(function(i, ele) {
-            ele = $(ele);
-            select = (ele.attr('select') || '*').trim();
-            if (select === '*') {
-                ele.replaceWith($ele.contents());
-            } else if (/\*$/.test(select)) {
-                ele.replaceWith(
-                    $ele.children(select.slice(0, -1))
-                    .contents()
-                );
-            } else {
-                ele.replaceWith($ele.children(select));
-            }
-        });
-    }
+  // use content
+  if (content.length) {
+    content.each(function (i, ele) {
+      ele = $(ele);
+      select = ele.attr('select') || '*';
+      if (select === '*') {
+        ele.replaceWith($ele.contents());
+      } else {
+        ele.replaceWith($ele.children(select));
+      }
+    });
+  }
 
-    if (uid) res.addClass('component-' + uid);
-    if (attrs.id) res.attr('id', attrs.id);
-    if (attrs.class) res.addClass(attrs.class);
-    if (attrs.style) {
-        var css = attrs.style.split(';'),
-            style = {};
-        css.forEach(function(rule) {
-            if (rule) {
-                rule = rule.split(':');
-                style[rule[0].trim()] = rule[1].trim();
-            }
-        });
-        res.css(style);
-    }
-    return res;
-}
-
-/**
- * _getComPath
- * get component path
- * @param {String} name component name
- * @param {String} [file]
- * @returns {String}
- */
-function _getComPath(name, file) {
-    // return file ?
-    //     path.join(src, 'components', name.split('-').join('/'), file) :
-    //     path.join(src, 'components', name.split('-').join('/'));
-    return file ?
-        fis.util(COMDIRPATH, name.split('-').join('/'), file) :
-        fis.util(COMDIRPATH, name.split('-').join('/'));
-}
-
-function _getComSubPath(name, file) {
-    return file ?
-        fis.util('/' + COMDIRNAME, name.split('-').join('/'), file) :
-        fis.util('/' + COMDIRNAME, name.split('-').join('/'));
-}
-
-function _getComId(name, file) {
-    return file ?
-        fis.util(COMDIRNAME, name.split('-').join('/'), file) :
-        fis.util(COMDIRNAME, name.split('-').join('/'));
+  if (uid) res.addClass('component-' + uid);
+  if (attrs.id) res.attr('id', attrs.id);
+  if (attrs.class) res.addClass(attrs.class);
+  if (attrs.style) {
+    var css = attrs.style.split(';')
+      , style = {};
+    css.forEach(function (rule) {
+      if (rule) {
+        rule = rule.split(':');
+        style[rule[0].trim()] = rule[1].trim();
+      }
+    });
+    res.css(style);
+  }
+  return res;
 }
 
 /**
@@ -165,30 +118,17 @@ function _getComId(name, file) {
  * @returns {String}
  */
 function _getComName(string) {
-    var match = string.match(/components[\/\\]([\w-\\\/]+)[\/\\]main\.(js|css|html)$/);
-    if (match) return match[1].split(/[\\\/]/g).join('-');
-    return false;
-}
-
-function _isComFile(string) {
-    if (/components[\/\\]([\w-\\\/]+)[\/\\]main\.(js|css|html)$/.test(string)) {
-        return true;
-    } else {
-        return false;
-    }
+  var match = string.match(/components[\/\\]([\w-\\\/]+)[\/\\]main\.(js|css|html)$/);
+  if (match) return match[1];
+  return false;
 }
 
 module.exports = {
-    COMDIRPATH: COMDIRPATH,
-    makeDeps: _makeDeps,
-    getDepJS: _getDepJS,
-    getDepCSS: _getDepCSS,
-    getDep: _getDep,
-    fix: _fix,
-    makeFragment: _makeFragment,
-    getComPath: _getComPath,
-    getComName: _getComName,
-    getComSubPath: _getComSubPath,
-    getComId: _getComId,
-    isComFile: _isComFile
+  makeDeps: _makeDeps,
+  getDepJS: _getDepJS,
+  getDepCSS: _getDepCSS,
+  getDep: _getDep,
+  fix: _fix,
+  makeFragment: _makeFragment,
+  getComName: _getComName
 };
