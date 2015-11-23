@@ -4,6 +4,10 @@ fis3 prepackager plugin for q components of imweb team
 
 # 处理过程
 
+- components/*.{css,js,scss}
+
+只替换`holder`成模块名
+
 - 入口文件 pages/main.html
     - 添加components css/js依赖
     - 展开components 
@@ -55,10 +59,6 @@ fis3 prepackager plugin for q components of imweb team
 </body>
 </html>
 ```
-
-- components/*.{css,js,scss}
-
-只替换`holder`成模块名
 
 # 依赖 
 
