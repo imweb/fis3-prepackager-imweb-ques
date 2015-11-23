@@ -48,12 +48,14 @@ var entry = module.exports = function(ret, conf, settings, opt) {
 
     // 替换组件js,css中的占位符
     fis.util.map(components, function(name, comp) {
-        ['jsFile', 'cssFile'].forEach(function(item) {
-            var f = comp[item];
-            if (f) {
-                f.setContent(replaceHolder(f.getContent(), name, settings));
-            }
-        });
+        if (comp) {
+            ['jsFile', 'cssFile'].forEach(function(item) {
+                var f = comp[item];
+                if (f) {
+                    f.setContent(replaceHolder(f.getContent(), name, settings));
+                }
+            });
+        }
     });
 };
 

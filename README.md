@@ -86,7 +86,7 @@ or
 
 # 配置
 
-- `holder`: `/__|\$__/g` 占位符
+- `holder`: `/___|\$__/g` 占位符
 - `components`: `['/components', getComp]` 组件路径
 
 ```js
