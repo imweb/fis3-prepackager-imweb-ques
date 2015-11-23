@@ -8,12 +8,14 @@ function initSingle(el, opts) {
 module.exports = function() {
     var components = window._components || {};
 
-    $.each(components, function(name, comp) {
+    Object.keys(components).forEach(function(name) {
+        var comp = components[name];
         comp.module = require(comp.js);
         Q.define(name, comp.module);
     });
 
-    $.each(components, function(name, comp) {
+    Object.keys(components).forEach(function(name) {
+        var comp = components[name];
         if (comp.child) {
             comp.module.init 
                 ? comp.module.init() 
