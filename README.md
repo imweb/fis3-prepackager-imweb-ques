@@ -7,7 +7,7 @@ fis3 prepackager plugin for q components of imweb team
 - 入口文件 pages/main.html
     - 添加components css/js依赖
     - 展开components 
-    - 添加components 信息(之前ques不需要，但它需要在components js文件里注册组件，为了简化对components js的处理, 将注册组件统一移至Q.factory中，因此需要组件信息)
+    - 添加components 信息(之前ques不需要，但它需要在components js文件里注册组件，为了简化对components js的处理, 将注册组件统一移至Q.factory中，因此添加组件信息)
 
 输入:
 
