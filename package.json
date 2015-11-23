@@ -11,6 +11,18 @@
   "author": {
     "name": "lqlongli"
   },
+  "license": "MIT",
+  "engines": {
+    "node": ">= 0.12"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/imweb/fis3-prepackager-imweb-ques.git"
+  },
+  "bugs": {
+    "url": "https://github.com/imweb/fis3-prepackager-imweb-ques/issues"
+  },
+  "homepage": "https://github.com/imweb/fis3-prepackager-imweb-ques",
   "dependencies": {
     "utils-merge": "^1.0.0",
     "map-stream": "^0.0.5",
@@ -20,3 +32,4 @@
     "set-component": "^1.0.0"
   }
 }
+

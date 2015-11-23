@@ -5,7 +5,7 @@ fis3 prepackager plugin for q components of imweb team
 # 标识Ques页面
 
 ```js
-fis.match('pages/**/*.main.html', {
+fis.match('pages/**main.html', {
     isQPage: true
 })
 ```
