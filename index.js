@@ -29,8 +29,8 @@ var entry = module.exports = function(ret, conf, settings, opt) {
                 var css = dep.cssFile,
                     js = dep.jsFile;
                 // 添加组件css,js依赖
-                css && p.appendCss(css.url);
-                js && p.appendJs(js.url);
+                css && file.addRequire(css.id);
+                js && file.addRequire(js.id);
                 deps[name] = {
                     js: js && (js.extras && js.extras.moduleId || js.url) || null,
                     child: dep.child || 0,
