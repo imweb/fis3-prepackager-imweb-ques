@@ -61,16 +61,12 @@ or
     <meta charset="UTF-8">
     <title></title>
     <link rel="stylesheet" href="/pages/start/main.css">
-    <!-- components css 依赖-->
-    <link rel="stylesheet" href="/components/chead/main.css">
 </head>
 <body>
     <!-- 展开components -->
     <div q-text="text" class="component-1"></div>
     <script src="/libs/mod.js"></script>
     <script src="/libs/jquery.min.js"></script>
-    <!-- components js 依赖-->
-    <script src="/components/chead/main.js"></script>
     <!-- components 信息 -->
     <script>var _components = {"chead":{"js":"components/chead/main","child":1,"uid":1}};</script>
     <script>
@@ -78,6 +74,13 @@ or
     </script>
 </body>
 </html>
+```
+
+```js
+// 添加components css依赖
+file.addRequire('/components/chead/main.css');
+// 添加components js依赖
+file.addRequire('/components/chead/main.js');
 ```
 
 # 依赖 
