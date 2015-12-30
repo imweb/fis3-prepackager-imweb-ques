@@ -60,7 +60,7 @@ function _getDep(customTag, file) {
  */
 function _fix(string, name, holder) {
   holder = holder || /\$\_\_/g;
-  return string.replace(holder, name + '__').trim();
+  return string.replace(holder, name + '_').trim();
 }
 
 /**

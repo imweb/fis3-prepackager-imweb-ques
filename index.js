@@ -61,7 +61,7 @@ var entry = module.exports = function(ret, conf, settings, opt) {
 
 // 替换占位符
 function replaceHolder(str, name, settings) {
-    return str && str.replace(settings.holder, name + '__') || str;
+    return str && str.replace(settings.holder, name + '_') || str;
 }
 
 // 是否有Ques页面标记
