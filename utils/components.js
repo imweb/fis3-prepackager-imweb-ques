@@ -54,13 +54,12 @@ function _getDep(customTag, file) {
 
 /**
  * _fix
- * @param {String} string the context need to fix
- * @param {String} path the custom tag name or path
  * @returns {String}
  */
-function _fix(string, name, holder) {
-  holder = holder || /\$\_\_/g;
-  return string.replace(holder, name + '_').trim();
+function _fix(comp, options) {
+  var html = comp.html || '<div></div>',
+      holder = options.holder || /\$\_\_/g;
+  return html.replace(holder, comp.hash).trim();
 }
 
 /**

@@ -1,7 +1,8 @@
 // begin from here
-var _ = require('lodash');
-var getComp = require('./getComp');
-var Page = require('./lib/page');
+var _ = require('lodash'),
+    getComp = require('./src/getComp'),
+    hash = require('./src/hash'),
+    Page = require('./lib/page');
 
 var entry = module.exports = function(ret, conf, settings, opt) {
 
@@ -9,10 +10,15 @@ var entry = module.exports = function(ret, conf, settings, opt) {
 
     // 获取查找组件
     function _getComp(name) {
-        var comp = typeof components[name] !== 'undefined'
-            ? components[name]
-            : components[name] = getComp(name, settings.components, ret);
-        return comp ? _.extend({}, comp) : null;
+        if (typeof components[name] === 'undefined') {
+            components[name] = getComp(name, settings.components, ret);
+            if (components[name]) {
+                // set hash
+                components[name].hash = 
+                    settings.hash ? hash.md(name) : hash.plain(name);
+            }
+        }
+        return components[name] ? _.extend({}, components[name]) : null;
     }
 
     // html
@@ -52,7 +58,7 @@ var entry = module.exports = function(ret, conf, settings, opt) {
             ['jsFile', 'cssFile'].forEach(function(item) {
                 var f = comp[item];
                 if (f) {
-                    f.setContent(replaceHolder(f.getContent(), name, settings));
+                    f.setContent(replaceHolder(f.getContent(), comp, settings));
                 }
             });
         }
@@ -60,8 +66,8 @@ var entry = module.exports = function(ret, conf, settings, opt) {
 };
 
 // 替换占位符
-function replaceHolder(str, name, settings) {
-    return str && str.replace(settings.holder, name + '_') || str;
+function replaceHolder(str, comp, settings) {
+    return str && str.replace(settings.holder, comp.hash) || str;
 }
 
 // 是否有Ques页面标记
@@ -71,11 +77,15 @@ function hasQMark(file, settings) {
 }
 
 entry.defaultOptions = {
+
     // html文件是Ques页面的标记
     qMark: '<!--isQPage-->', 
 
     // 占位符
     holder: /___|\$__/g,
+
+    // 是否对占位符做hash处理
+    hash: true,
 
     // 组件路径
     components: ['/components']

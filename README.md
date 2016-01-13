@@ -90,6 +90,7 @@ file.addRequire('/components/chead/main.js');
 # 配置
 
 - `holder`: `/___|\$__/g` 占位符
+- `hash`: `false` 是否对占位符做hash处理
 - `components`: `['/components', getComp]` 组件路径
 
 ```js
