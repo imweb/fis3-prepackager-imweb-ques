@@ -1,11 +1,13 @@
 
 var hashMap = {},
-    uid = 0;
+    uid = 26;
 exports.md = function(name) {
     if (!hashMap[name]) {
-        hashMap[name] = (++uid).toString(36);
+        hashMap[name] = (++uid).toString(26).replace(/\d/g, function(n) {
+            return 'zyxwvutsrq'[n];
+        });
     }
-    return '_' + hashMap[name] + '_';
+    return hashMap[name] + '_';
 };
 
 exports.plain = function(name) {
